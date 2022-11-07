@@ -4,10 +4,13 @@ import {useState,  useEffect} from "react"
 
 export default function AllUsersPosts(props){
     const [usersPosts, setUsersPosts] =useState([])
+    
+    props.getNumberOfPosts(usersPosts.length)
+
 
     
     async function getAllPosts(){
-        let postsCollectionReference= collection(firestore, "users", auth.currentUser.uid, "posts")
+        let postsCollectionReference= collection(firestore, "users", props.ID, "posts")
         let data=await getDocs(postsCollectionReference)
         let docs= data.docs
         let returnArray=[]
@@ -24,6 +27,7 @@ export default function AllUsersPosts(props){
     useEffect(()=>{
         getAllPosts()
     }, [])
+
 
 
     

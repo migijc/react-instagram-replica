@@ -64,7 +64,7 @@ export default function SearchBox(){
             <div className="searchValuesDiv">
                 {searchValue=== null && <h4>Recent</h4>}
                 {possibleResults !==null && possibleResults.map(result=>{
-                     return <UserFromSearch username={result.username} fullName={result.fullName} key={result.uid}/>
+                     return <UserFromSearch username={result.username} fullName={result.fullName} key={result.uid} userID={result.uid}/>
                 })}
             </div>
 
@@ -75,8 +75,13 @@ export default function SearchBox(){
 function UserFromSearch(props){
 const navigate= useNavigate()
 
+   function handleNavigate(){
+        navigate(`../${props.username}`, {replace:true})
+        // navigate(0)
+    }
+
     return (
-    <div className="aSearchReturn" onClick={()=>navigate(`/${props.username}`)}>
+    <div className="aSearchReturn" onClick={handleNavigate}>
             <div className="profilePicInSearch"/>
             <div>
                 <p style={{fontWeight:"900"}}>{props.username}</p>

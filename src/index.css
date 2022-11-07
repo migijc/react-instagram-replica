@@ -176,17 +176,6 @@ form{
     display: flex;  
 }
 
-.profileInfo{
-    width: 62%;
-    min-height: 40vh;
-    position: relative;
-}
-
-.profileInfo > hr{
-    width: 100%;
-    position: absolute;
-    bottom: 0;
-}
 
 .allPostsInProfile{
     display: grid;
@@ -215,6 +204,7 @@ form{
     width: 14rem;
     box-sizing: border-box;
     background-color: transparent;
+    border: 1px solid red;
 }
 
 #searchBox{
@@ -249,4 +239,56 @@ form{
 .searchValuesDiv{
     margin-top: .7rem
 
+}
+
+.profileInfo{
+    width: 62%;
+    min-height: 40vh;
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.profileInfo > hr{
+    width: 100%;
+    position: absolute;
+    bottom: 0;
+}
+
+.info{
+    display: flex;
+    flex-direction: column;
+    border: 1px solid green;
+    gap: 1.5rem;
+}
+
+
+.infoHeader{
+    display: flex;
+    gap: 1.3rem;
+    align-items: center;
+}
+
+.profileContentDetails{
+    display: flex;
+    gap: 2rem;
+}
+
+.profileUsername{
+    font-weight: 400;
+    font-size: 1.5rem;
+}
+
+
+.followButton{
+    color: white;
+    background-color: #0095f2;
+    border: none;
+    font-weight: bold;
+    padding-left: .8rem;
+    padding-right: .8rem;
+    padding-top: .4rem;
+    padding-bottom: .4rem;
+    font-size: 14px;
+    border-radius: 4px;
 }

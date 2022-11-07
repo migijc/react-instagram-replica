@@ -1,10 +1,12 @@
 import { useNavigate } from "react-router-dom"
 import { useState } from "react"
 import SearchBox from "./SearchBox"
+import { auth } from "./FirebaseConfig"
 
 export default function MenuBar(props){
     const [toSearch, setToSearch] = useState(false)
     const navigate = useNavigate()
+    console.log(auth.currentUser)
 
     return (
         <div className="menuBar">
@@ -14,7 +16,7 @@ export default function MenuBar(props){
             <li>Messages</li>
             <li>Notifications</li>
             <li onClick={props.handleNewPost||alert}>Create</li>
-            <li onClick={()=> navigate("/profile")}>Profile</li>
+            <li onClick={()=> navigate(`/${props.currentUser.username}`)}>Profile</li>
             <li>More</li>
         </ul>
         {toSearch && <SearchBox/>}

@@ -39,7 +39,7 @@ export default function HomePage(props){
     let setPostOnRouter=props.setPostOnRouter
     return (
         <div id="homePage">
-            <MenuBar handleNewPost={handleCreateClick}/>
+            <MenuBar handleNewPost={handleCreateClick} currentUser={props.currentUser}/>
 
             {/* does not belong here */}
             {toCreatePost===true && <NewPostPopUp handleCompletion={setToCreatePost} UID={user} refreshOnNewPost={refreshPost}/>}
