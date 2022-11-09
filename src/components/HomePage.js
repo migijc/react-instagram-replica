@@ -5,10 +5,10 @@ import { useNavigate } from "react-router-dom"
 import {storage} from "./FirebaseConfig"
 import MenuBar from "./MenuBar"
 import NewPostPopUp from "./NewPostPopUp"
+import MainFeed from "./MainFeed"
 
 export default function HomePage(props){
     const [user, setUser] = useState(null)
-    const [toCreatePost, setToCreatePost] = useState(false)
     const navigate = useNavigate()
 
     useEffect(()=>{
@@ -21,34 +21,20 @@ export default function HomePage(props){
         }
     })
 
-    function handleCreateClick(){
-        setToCreatePost(true)
-    }
+    let handlePostClick=props.handlePostClick
 
-    function handleNavigationToProfile(){
-        navigate("/profile")
-    }
+    if(props.currentUser){
+        return (
+            <div id="homePage">
+                {props.MenuBar}
 
-    function closeNewPostPopUp(){
-        setToCreatePost(false)
-    }
-
-    let  refreshPost= props.refreshAllPosts
-
-
-    let setPostOnRouter=props.setPostOnRouter
-    return (
-        <div id="homePage">
-            <MenuBar handleNewPost={handleCreateClick} currentUser={props.currentUser}/>
-
-            {/* does not belong here */}
-            {toCreatePost===true && <NewPostPopUp handleCompletion={setToCreatePost} UID={user} refreshOnNewPost={refreshPost}/>}
-            <button className="closeNewPostButton" onClick={()=>setToCreatePost(false)}>X</button>
-            
-
-            <div className="mainContent">
-                <button onClick={()=> signOut(auth)}>Sign out</button>
+                <div className="mainContent">
+                    <MainFeed currentUsername={props.currentUser.username} handlePostClick={handlePostClick}/>
+                    <button onClick={()=> signOut(auth)}>Sign out</button>
+    
+                </div>
             </div>
-        </div>
-    )
+        )
+    }
+
 }

@@ -21,34 +21,37 @@ export default function NewPostPopUp(props){
         setImgToAdd(thumbnailURL)
     }
 
-    function handleNextBtnClick(){
-        if(nextAction==="Share"){
-            let returnList=[]
-            let postDir=ref(storage, `${props.UID}/posts/${filesOBJ.name}`)
-            uploadBytes(postDir, filesOBJ)
-            .then(response=>{
-                console.log(response)
-                returnList.push(response.metadata.timeCreated)
-                return getDownloadURL(response.ref)
-            }).then(response=>{
-                returnList.push(response)
-                returnList.push(postCaption)
-                returnList.push(null)
-                returnList.push(0)
-                console.log(returnList)
-                let postsCollection=collection(firestore, "users", `${props.UID}`, "posts")
-                let newPostRef=doc(postsCollection)
-                addDoc(postsCollection, {
-                    postDetails: returnList
-                })
-                
-            })
 
+    async function handleNextBtnClick(){
+        if(nextAction=== "Share"){
+            let returnList = []
+            let likedBy=[]
+            let postDir=ref(storage, `${props.UID}/posts/${filesOBJ.name}`)
+            let upload = await uploadBytes(postDir, filesOBJ)
+            returnList.push(upload.metadata.timeCreated)
+            let downloadURL= await getDownloadURL(upload.ref)
+            returnList.push(downloadURL)
+            returnList.push(postCaption)
+            returnList.push(props.currentUsername)
+            let postsCollection=collection(firestore, "users", `${props.UID}`, "posts")
+            let newPostRef= doc(postsCollection)
+            let addDocTask=await addDoc(postsCollection, {
+                postDetails: returnList,
+                likedBy
+            })
+            // console.log(addDocTask)
+            // let commentCollectionRef= collection(firestore, "users", props.UID, "posts", addDocTask.id, "comments")
+            // let addGhostComment= setDoc(doc(commentCollectionRef, "ghost"), {
+            //     details:["ghost", "a ghost comment"]
+            // })
             return props.handleCompletion()
+    
         }
+    
         setToAddDescription(true)
-        setNextAction("Share")
+         setNextAction("Share")
     }
+    
 
     function handlePostCaption(caption){
         setPostCaption(caption)
@@ -94,3 +97,5 @@ function PictureDetails(props){
         </div>
     )
 }
+
+

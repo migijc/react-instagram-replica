@@ -5,7 +5,6 @@ import {useState,  useEffect} from "react"
 export default function AllUsersPosts(props){
     const [usersPosts, setUsersPosts] =useState([])
     
-    props.getNumberOfPosts(usersPosts.length)
 
 
     
@@ -27,6 +26,10 @@ export default function AllUsersPosts(props){
     useEffect(()=>{
         getAllPosts()
     }, [])
+
+    useEffect(()=>{
+        props.getNumberOfPosts(usersPosts.length)
+    })
 
 
 
