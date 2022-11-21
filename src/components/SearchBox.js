@@ -1,7 +1,8 @@
 import {useEffect, useState} from "react"
 import { firestore } from "./FirebaseConfig"
 import {getDocs, collection} from "firebase/firestore"
-import { useNavigate } from "react-router-dom"
+import { useNavigate, useParams } from "react-router-dom"
+import noProfilePic from "../img/noProfilePic.png"
 
 
 
@@ -57,14 +58,14 @@ export default function SearchBox(){
     return (
         <div id="searchBox">
             <div className="searchDiv">
-                <h3>Search</h3>
-                <input onChange={handleSearchState} type="text" placeholder="Search"></input>
+                <h3 className="searchBoxTitle">Search</h3>
+                <input className="menuSearchInput" onChange={handleSearchState} type="text" placeholder="Search"></input>
             </div>
-
+            <hr className="searchBoxHR"/>
             <div className="searchValuesDiv">
                 {searchValue=== null && <h4>Recent</h4>}
                 {possibleResults !==null && possibleResults.map(result=>{
-                     return <UserFromSearch username={result.username} fullName={result.fullName} key={result.uid} userID={result.uid}/>
+                     return <UserFromSearch username={result.username} fullName={result.fullName} key={result.uid} userID={result.uid} profilePic= {result.profilePictureURL}/>
                 })}
             </div>
 
@@ -72,17 +73,26 @@ export default function SearchBox(){
     )
 }
 
-function UserFromSearch(props){
-const navigate= useNavigate()
 
-   function handleNavigate(){
-        navigate(`../${props.username}`, {replace:true})
-        // navigate(0)
+   function UserFromSearch(props){
+    const {usernameOfProfileToVisit} = useParams()
+    let navigate=useNavigate()
+
+
+
+    function getProfileImage(){
+        if(props.profilePic !== null){
+            return <div className="profilePicInSearch" style={{backgroundImage: `url(${props.profilePic})`}}/>
+        }
+        else{
+            return <div style={{backgroundImage:`url(${noProfilePic})`,}} className="noPicInSearch" alt="profilePic"/>
+        }
     }
+    
 
     return (
-    <div className="aSearchReturn" onClick={handleNavigate}>
-            <div className="profilePicInSearch"/>
+    <div className="aSearchReturn" onClick={()=> navigate(`../${props.username}`, {replace:true})}>
+        {getProfileImage()}
             <div>
                 <p style={{fontWeight:"900"}}>{props.username}</p>
                 <p>{props.fullName}</p>

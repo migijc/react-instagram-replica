@@ -11,6 +11,7 @@ export default function MainFeed(props){
 
     useEffect(()=>{
         if(currentUsersFollowing){
+            setPostsToDisplay([])
             currentUsersFollowing.forEach(following=>{
                 getPostsOfFollowing(following, setPostsToDisplay)
             })
@@ -34,20 +35,24 @@ export default function MainFeed(props){
         }())
     }, [])
 
-    return (
-        <div id="mainFeed">
-            {postsToDisplay.map(post=>{
-                return (
-                <Post 
-                    key={post.id} 
-                    opID={post.opID} 
-                    postID={post.id}
-                    currentUsername={props.currentUsername}
-                    handlePostClick={props.handlePostClick}
-                />)
-            })}
-        </div>
-    )
+    if(postsToDisplay){
+        return (
+            <div id="mainFeed">
+                {postsToDisplay.length ===0 && <h2 className="noPostsMessage">Follow your friends to see thir posts.</h2>}
+                {postsToDisplay.map(post=>{
+                    return (
+                    <Post 
+                        key={post.id} 
+                        opID={post.opID} 
+                        postID={post.id}
+                        currentUsername={props.currentUsername}
+                        handlePostClick={props.handlePostClick}
+                    />)
+                })}
+            </div>
+        )
+    }
+
 }
 
 async function getPostsOfFollowing(uid, cb){
@@ -59,6 +64,7 @@ async function getPostsOfFollowing(uid, cb){
             let data=doc.data()
             data.id=doc.id
             data.opID=uid
+            listOfPosts.push(data)
             cb(prev=>{
                 return [...prev, data]
             })

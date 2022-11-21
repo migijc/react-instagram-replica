@@ -5,60 +5,70 @@ import { firestore, auth } from "./FirebaseConfig"
 import {doc, collection, onSnapshot, updateDoc, arrayUnion, addDoc, getDocs} from "firebase/firestore"
 import PostInteractions from "./PostInteractions"
 import AddComment from "./AddComment"
+import Username from "./Username"
 
 
 export default function Post(props){
-    const [newComment, setNewComment] = useState(null)
-    const [commentRows, setCommentRows] = useState(1)
     const [postSnapshot, setPostSnapshot] = useState(null)
-    const [docRef, setDocRef] = useState(null)
-    const [postCollection, setPostCollection] = useState(null)
-    const [likedByUser, setLikedByyUser] = useState(false)
-    const [comments, setComments] = useState(null)
+    const [postOpProfilePic, setPostOpProfilePic] = useState(null)
     let postID=props.postID
     let currentUsername= props.currentUsername
-    
+    let collectionRef=collection(firestore, "users", props.opID, "posts")
+    let docRef=doc(collectionRef, postID)
+
+
+
+
     useEffect(()=>{
-        console.log("working")
-        let collectionRef=collection(firestore, "users", props.opID, "posts")
-        setPostCollection(collectionRef)
-        let docRef=doc(collectionRef, props.postID)
-        setDocRef(docRef)
-        let getSnapshot= onSnapshot(docRef, snapshot=>{
-            setPostSnapshot(snapshot.data())
-        })
-        let commentsColRef= collection(collectionRef, props.postID, "comments")
-        let commentSnapshots= []
-        getDocs(commentsColRef)
-         .then(
+        let opDocument
+        (async function getOPProfilePic(){
+            let colRef= collection(firestore, "users")
+            let getUser=await getDocs(colRef)
+            getUser.docs.forEach(doc=>{
+                if(doc.id===props.opID){
+                    opDocument=doc.data()
+                }
+            })
+        }()).then(
             response=>{
-                response.docs.forEach(doc=>{
-                    console.log(doc.data())
-                    commentSnapshots.push(doc.data())
-                })
+                setPostOpProfilePic(opDocument.profilePictureURL)
             }
-         )
-        setComments(commentSnapshots) 
+        )
     }, [])
+
+    useEffect(()=>{
+        getPostSnapshot(props.opID, props.postID, setPostSnapshot, postSnapshot)
+    },[])
+
 
     function handleClick(){
         let postDetails= {
             postSnapshot:postSnapshot,
-            postComments: comments,
             docRef:docRef,
-            postCollection:postCollection,
-            currentUser:props.currentUsername,
+            postCollection:collectionRef,
             postID:postID
         }
         props.handlePostClick(postDetails)
     }
 
+
+    function getProfileImage(){
+        if(postOpProfilePic){
+            return <div className="openedPostProfilePic" style={{backgroundImage: `url(${postOpProfilePic})`}}/>
+        }
+        else{
+            return <div style={{backgroundImage:`url(${noProfilePic})`, width:"3rem", height:"3rem", margin:"-.5rem"}} className="openedPostProfilePic" alt="profilePic"/>
+        }
+    }
+
+
     if(postSnapshot){
         return (
             <div className="aPostOnFeed">
                 <div className="postHeader">
-                    <img src={noProfilePic} alt="Profile pic"/>
-                    <p>{postSnapshot.postDetails[3]}</p>
+                    {getProfileImage()}
+                    <Username username={postSnapshot.postDetails[3]} classString="usernameInPost"/>                   
+
     
                 </div>
     
@@ -71,13 +81,13 @@ export default function Post(props){
                     <p className="postLikes">{postSnapshot.likedBy.length} likes</p>
                     <div className="commentSectionInFeed">
                         <div className="captionSection">
-                            <p style={{fontWeight: "600", fontSize:"14px"}}>{postSnapshot.postDetails[3]}</p>
+                            <Username username={postSnapshot.postDetails[3]} classString="usernameInPost"/>
                             <p className="postCaption">{postSnapshot.postDetails[2]}</p>
                         </div>
-                        {comments.length > 0 && <p onClick={handleClick} className="postInFeedHasComments">View all {comments.length} comments</p>}
+                        {postSnapshot.numOfCommentsOnPost > 0 && <p onClick={handleClick} className="postInFeedHasComments">View all {postSnapshot.numOfCommentsOnPost} comments</p>}
                         <p className="howLongAgoWasPostedDisplay">"XX HOURS AGO"</p>
                         <hr className="hrForComment"/>
-                        <AddComment collectionRef={postCollection} postID={postID} currentUsername={currentUsername} />
+                        <AddComment collectionRef={collectionRef} postID={postID} currentUsername={currentUsername} />
                     </div>
                 </div>
             </div>
@@ -85,4 +95,18 @@ export default function Post(props){
     }
  
 }
+
+
+async function getPostSnapshot(opID, postID, setPostSnapshot){
+    let collectionRef=collection(firestore, "users", opID, "posts")
+    let docRef=doc(collectionRef, postID)
+    onSnapshot(docRef, snapshot=>{
+        setPostSnapshot(snapshot.data())
+    })
+}
+
+
+
+
+
 

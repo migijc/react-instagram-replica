@@ -6,6 +6,7 @@ import {doc, collection, onSnapshot, updateDoc, arrayUnion, addDoc, getDocs} fro
 //props required:: class and docRef
 export default function PostInteractions(props){
     const [isLikedByUser, setIsLikedByUser] = useState(false)
+
     
     function handleLike(){
         updateDoc(props.docRef,  {likedBy: arrayUnion(auth.currentUser.uid)})

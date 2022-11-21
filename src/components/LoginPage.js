@@ -7,6 +7,10 @@ import { useNavigate } from "react-router"
 import {storage} from "./FirebaseConfig"
 import {ref, uploadBytes} from "firebase/storage"
 import SignUpForm from "./SignUp"
+import signInImg from "../img/signInImg.png"
+import logoInSignIn from "../img/logoInSign.png"
+import {AiFillFacebook} from "react-icons/ai"
+import getTheApp from "../img/getTheApp.png"
 
 
 //Main Login Page Component
@@ -46,10 +50,14 @@ export default function LoginPage(props){
         setToCreateAccount(true)
     }
 
+    function returnToLogin(){
+        setToCreateAccount(false)
+    }
+
     return (
         <div>
             {toCreateAccount===false && <SignInForm handleEmail={handleEmail} handlePassword={handlePassword} handleSignUpClick={handleSignUpClick} handleLogin={handleLogin}/>}
-            {toCreateAccount===true && <SignUpForm/>}
+            {toCreateAccount===true && <SignUpForm returnToLogin={returnToLogin}/>}
         </div>
     )
 }
@@ -62,13 +70,42 @@ function SignInForm(props){
     }
 
     return (
-        <form className="signForm">
-            <input onChange={props.handleEmail} placeholder="Email/Username or telephone"></input>
-            <input onChange={props.handlePassword} placeholder="Password" type="password"></input>
-            <button onClick={props.handleSignUpClick} >Sign up</button>
-            <button onClick={signUserOut}>Sign out</button>
-            <button onClick={props.handleLogin}>Log In</button>
-        </form>
+        <div className="signInPage">
+            <img className="loginPageImg" src={signInImg}/>
+
+            <div className="signInContainer">
+                <form className="signInForm">
+                    <img  className="logoInForm" src={logoInSignIn}/>
+                    <input className="inputOne" onChange={props.handleEmail} placeholder="Email/Username or telephone"></input>
+                    <input onChange={props.handlePassword} placeholder="Password" type="password"></input>
+                    <button className="loginButton" onClick={props.handleLogin}>Log in</button>
+                    <p className="or">Or</p>
+                    <div className="signInWithFBContainer">
+                        <AiFillFacebook className="fbLogo"/>
+                        <p>Log in with Facebook</p>
+                    </div>
+
+                    <p className="forgotPassword">Forgot Password</p>
+                   
+                </form>
+
+                    <div className="signUpSec">
+                        <p>Don't have an account?</p>
+                        <button onClick={props.handleSignUpClick} >Sign up</button>
+                        {/* <button onClick={signUserOut}>Sign out</button> */}
+                    </div>
+
+                    <div className="getTheAppCon">
+                <p>Get the app.</p>
+                <img src={getTheApp} className="getAppImgs" alt="Redirect to get the app site"/>
+            </div>
+
+            </div>
+         
+
+       
+        </div>
+ 
     )
 }
 

@@ -13,8 +13,9 @@ export default function FollowButton(props){
 
     useEffect(()=>{
         if(props.isFollowed===true){
-            setButtonText("Following")
+            return setButtonText("Following")
         }
+        setButtonText("Follow")
     },[props.isFollowed])
 
     return (
