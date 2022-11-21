@@ -91,7 +91,7 @@ export default function Profile(props){
                                 <p className="profileUsername">{user.username}</p>
                                 {isCurrentUsersProfile===false && <FollowButton accountToFollow={user.id} isFollowed={isFollowed}/>}
                                 {isCurrentUsersProfile===true && <button onClick={()=>navigate("/edit")} className="editProfileButton">Edit Profile</button>}
-                                <FiSettings  onClick={()=>navigate("/edit")} style={{fontSize: "1.2rem"}}/>
+                                {isCurrentUsersProfile && <FiSettings  onClick={()=>navigate("/edit")} style={{fontSize: "1.2rem"}}/>}
                             </div>
                             <div className="profileContentDetails">
                                 <p>{numberOfPosts} Posts</p>
